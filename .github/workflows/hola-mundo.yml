@@ -1,0 +1,12 @@
+name: hola-mundo
+on:
+  push:
+    - 'main'
+jobs:
+  runs-on: ubuntu-latest  
+  steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 'latest'
+    - run: node main.js
