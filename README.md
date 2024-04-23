@@ -1,10 +1,11 @@
+
 # github_actions
-##Push
+## Push
 Push se entiende cuando mandamos al repositorio remoto las actualizaciones del repositorio local.
 
 Este script acaparará el trigger push mientras suceda en los branches main o releases/** (cualquier rama con nombre release o que nazca a partir de este nombre) y solo se tendrá en cuenta si se han modificado archivos de formato .js.
 
-
+```
 on: #Acaparará los triggers de este workflow
 	push: #El tipo de trigger: push
 		branches: #Las ramas en las que se activará el workflow
@@ -12,56 +13,64 @@ on: #Acaparará los triggers de este workflow
 			- 'releases/**' #O en la rama releases y derivados
 		paths: #Serán las rutas que se tendrán en cuenta para activar el workflow
 			- '**.js' #Todos los archivos .js en el repositorio
+```
 
-##Pull Request
+## Pull Request
 El Pull Request será la petición de mergear una rama aislada con otra rama (generalmente principal).
 
 Este script se activará por un PR, específicamente en el momento de abrirlo y etiquetarlo (opened y labeled), seguirá el resto de reglas que el push.
 
 
+```
 on: #Acaparará los triggers de este workflow
-	pull_request: #El tipo de trigger: pr
-		types: #Los estados que activarán el trigger
-			- [opened, labeled] #Tomará los estados del PR
-		branches: #Las ramas en las que se activará el workflow
-			- 'releases/**' #En la rama releases y derivados
-		paths: #Serán las rutas que se tendrán en cuenta para activar el workflow
-			- '**.js' #Todos los archivos .js en el repositorio
-##Issues
+    pull_request: #El tipo de trigger: pr
+        types: #Los estados que activarán el trigger
+            - [opened, labeled] #Tomará los estados del PR
+        branches: #Las ramas en las que se activará el workflow
+            - 'releases/**' #En la rama releases y derivados
+        paths: #Serán las rutas que se tendrán en cuenta para activar el workflow
+            - '**.js' #Todos los archivos .js en el repositorio
+```
+
+## Issues
 Los issues son foros donde se anuncian difuncionalidades del código por parte de la comunidad o los propios developers.
 
 Tiene la misma lógica de los PR, sin embargo, los types cambiarán.
 
-
+```
 on: #Acaparará los triggers de este workflow
 	issues: #El tipo de trigger: issues
 		types: #Los estados que activarán el trigger
 			- [opened, edited, closed]
-##Issue Comment
+```
+
+## Issue Comment
 Cuando se generen comentarios en un Issue o un PR se activará este trigger.
 
 Tendremos 2 casos, el primero donde se ejecutará un issue comment, y el segundo donde se ejecutará en un PR comment.
 
 En este caso cada que se cree o elimine un comentario de un Issue se activará y correrá el workflow.
 
-
+```
 on:
 	issue_comment: 
 		types:  [created, deleted]
+```
 En este segundo ejemplo también trabajaremos por issue_comment, sin embargo, añadiremos un job que verificará que estamos sobre un pull request con el condicional dado, si es verdad, podrá continuar.
 
-
+```
 on: issue_comment
 jobs:
 	pr_commented:
 		name : PR comment
 		if : ${{ github.event.issue.pull_request }}
-##Workflow dispatch
+```
+## Workflow dispatch
 Los Workflow dispatch son Workflows de activación manual, estos poseen la característica de poder setear inputs, los configuraremos dentro del archivo YAML.
 
 Este Workflow contendrá 3 variables a ingresar las cuales serán alerta, tags y enviroment, serán contenidas por la etiqueta inputs y en cada una especificaremos sus características. La primera tendrá una descripción, será obligatoria, tendrá medio como valor por defecto y será de tipo choice (las opciones serán alto, medio o bajo). Los otros 2 casos son parecidos, donde tags será un boolean opcional y enviroments un string obligatorio.
 
-
+```
 on: 
 	workflow_dispatch:
 		inputs:
@@ -84,13 +93,15 @@ on:
 				description : 'Objetivo'
 				required : true
 				type : string
-##Schedule
+```
+## Schedule
 Los schedules son un tipo de trigger que se activará automáticamente por una regla de tiempo.
 
-
+```
 on:
 	schedule:
 		- cron : '30 5,17 * * *'
+```
 Puedes notar que hay 2 valores puestos (30 - 5,17) y 3 asteriscos, esta es una notación de cronograma que indicará valores a nivel de tiempo.
 
 
